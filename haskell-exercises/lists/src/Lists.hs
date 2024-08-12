@@ -19,6 +19,8 @@ union (x:xs) ys
 -- Remove Implementations, from, here on
 
 intersection:: [Int] -> [Int] -> [Int]
+intersection [] _ = []
+intersection _ [] = []
 intersection list1 list2 = [a | a <- list1, member a list2]
 --intersection list1 list2 = fold member
 
@@ -38,24 +40,26 @@ insertionSort :: [Int] -> [Int]
 insertionSort list = foldl (flip insert) [] list
 
 binaryToDecimal :: [Int] -> Int
-binaryToDecimal aaaaa = 0
-    
+--binaryToDecimal list = foldl (\acc (idx, x) -> acc + x * (2 ^ idx)) 0 (zip [0..] list)
+--binaryToDecimal list = binaryToDecimalReversed $ reversed list
+binaryToDecimal list = sum [x * (2 ^ idx) | (idx, x) <- zip [0..] (reverse list)]
+
 toDecimal :: Int -> [Int] -> Int
-toDecimal aaaaa aaa = 0
+toDecimal base list = sum [x * (base ^ idx) | (idx, x) <- zip [0..] (reverse list)]
     
 toDec::Int -> String -> Int
-toDec base s = 0
+toDec base s = toDecimal base (map digitToInt s)
 
 -- Same as `toDec` But use a list comprehension
 
 decimal::Int -> String -> Int
-decimal aaaaa aa  = 0
+decimal base s = toDecimal base [digitToInt x | x <- s]
 
 firsts::[a] -> [[a]]
-firsts aaa = [[]]
+firsts list = [take i list | (i, _) <- zip [1..] list]
 
 -- Given two String that represents numbers in binary implement the 'binaryAdd' function
 -- DO NOT USE a predefined '+' operation
 
 binaryAdd::String -> String -> String
-binaryAdd aa aaaa  = ""
+binaryAdd s1 s2 = ""
