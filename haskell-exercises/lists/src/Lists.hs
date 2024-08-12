@@ -1,7 +1,7 @@
 module Lists (member, union, intersection, difference,
               insert, insertionSort,
               binaryToDecimal, toDecimal, toDec, decimal, firsts,
-              binaryAdd) where
+              binaryAdd, merge, sort) where
   
 import Data.Char(digitToInt)  
 
@@ -62,4 +62,22 @@ firsts list = [take i list | (i, _) <- zip [1..] list]
 -- DO NOT USE a predefined '+' operation
 
 binaryAdd::String -> String -> String
+--binaryAdd s1 s2 = reverse $ binaryAddCarried (reverse s1) (reverse s2)
 binaryAdd s1 s2 = ""
+
+--binaryAddCarried::String -> String -> String -> String
+--
+--binaryAddCarried (x1:xs1) (x2:xs2) carry = ""
+
+merge::(Ord a) => [a] -> [a] -> [a]
+merge l1 [] = l1
+merge [] l2 = l2
+merge (x1:xs1) (x2:xs2)
+  | x1 <= x2 = x1: (merge xs1 (x2:xs2))
+  | otherwise = x2: (merge (x1:xs1) xs2)
+
+sort::(Ord a) => [a] -> [a]
+sort [] = []
+sort [a] = [a]
+sort list = merge (sort half1) (sort half2)
+  where (half1, half2) = splitAt ((length list) `div` 2) list

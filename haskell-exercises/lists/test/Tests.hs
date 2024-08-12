@@ -9,7 +9,10 @@ import Lists (
    binaryToDecimal, toDecimal, toDec,
    decimal,
    firsts,
-   binaryAdd)
+   binaryAdd,
+   merge,
+   sort
+   )
 
 main :: IO ()
 main = hspec $ do
@@ -26,6 +29,15 @@ main = hspec $ do
       union [1..5] [3..7] `shouldBe` [1..7]
     it "Disjoint sets" $ do 
       union [1..5] [6..7] `shouldBe` [1..7]
+
+  describe "merge" $ do
+      it "simple merge" $ do
+        merge [1, 2, 8, 10, 11, 12, 20] [1, 2, 3, 11, 14, 19] `shouldBe` [1, 1, 2, 2, 3, 8, 10, 11, 11, 12, 14, 19, 20]
+
+  describe "sort" $ do
+        it "simple sort" $ do
+          sort [5, 3, 8, 1, 2, 7, 4, 6] `shouldBe` [1, 2, 3, 4, 5, 6, 7, 8]
+
 
   describe "intersection" $ do
     it "Same Set" $ do
