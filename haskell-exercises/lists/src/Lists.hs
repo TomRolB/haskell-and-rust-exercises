@@ -61,10 +61,35 @@ firsts list = [take i list | (i, _) <- zip [1..] list]
 -- Given two String that represents numbers in binary implement the 'binaryAdd' function
 -- DO NOT USE a predefined '+' operation
 
-binaryAdd::String -> String -> String
---binaryAdd s1 s2 = reverse $ binaryAddCarried (reverse s1) (reverse s2)
-binaryAdd s1 s2 = ""
 
+
+xor:: String -> String -> String
+xor x y
+  | x /= y = "1"
+  | otherwise = "0"
+
+stringAnd:: String -> String -> String
+stringAnd x y
+  | x == "1" && y == "1" = "1"
+  | otherwise = "0"
+
+fullAdder::String -> String -> String -> (String, String)
+fullAdder a b carryIn = (sum, carryOut)
+  where
+    sum = a `xor` b `xor` carryIn
+    carryOut = (a `stringAnd` b) `xor` (carryIn `stringAnd` (a `xor` b))
+
+binaryAddCarry::String -> String -> String -> String
+binaryAddCarry [] [] "1" = "1"
+binaryAddCarry [] [] "0" = ""
+binaryAddCarry [] l2 carryIn = binaryAddCarry "0" l2 carryIn
+binaryAddCarry l1 [] carryIn = binaryAddCarry l1 "0" carryIn
+binaryAddCarry (x:xs) (y:ys) carryIn = sum : binaryAddCarry xs ys carryOut
+  where (sum, carryOut) = fullAdder x y carryIn
+
+binaryAdd::String -> String -> String
+binaryAdd l1 l2 = reverse $ binaryAddCarry (reverse l1) (reverse l2) "0"
+--binaryAdd s1 s2 = reverse $ binaryAddCarried (reverse s1) (reverse s2)
 --binaryAddCarried::String -> String -> String -> String
 --
 --binaryAddCarried (x1:xs1) (x2:xs2) carry = ""
