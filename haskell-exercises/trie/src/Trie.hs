@@ -16,11 +16,6 @@ find bits trie
   | length bitsLeft == 0 = value
   | otherwise = error "There's nothing for this key"
   where (value, bitsLeft) = findSafe bits trie
---find [] (Leaf a) = a
---find [] (_ :-: _) = error "There's nothing for this key"
---find _ (Leaf a) = error "There's nothing for this key"
---find (F:xs) (l :-: _) = find xs l
---find (T:xs) (_ :-: r) = find xs r
 
 -- Same than find, but returning the leaf's value even
 -- if the list has not been depleted
@@ -30,12 +25,6 @@ findSafe [] (_ :-: _) = error "There's nothing for this key"
 findSafe (F:xs) (l :-: _) = findSafe xs l
 findSafe (T:xs) (_ :-: r) = findSafe xs r
 
---findSafeRecur::Bits -> Trie a -> (a, Bits)
---findSafeRecur list (Leaf a)
---  |
---  |
---  where
-
 decode::Bits -> Trie Char -> String
 --decode bits trie = foldl
 decode [] trie = ""
@@ -43,6 +32,10 @@ decode bits trie = char : decode bitsLeft trie
   where (char, bitsLeft) = findSafe bits trie
 
 toList::Trie a -> [(a, Bits)]
-toList trie = error "Implement it"
+toList trie = toListRecur trie []
 
-toListRecur
+toListRecur::Trie a -> Bits -> [(a, Bits)]
+toListRecur (Leaf a) consumed = [(a, reverse consumed)]
+toListRecur trie consumed = l ++ r where
+  l = toListRecur (left trie) (F : consumed)
+  r = toListRecur (right trie) (T : consumed)
