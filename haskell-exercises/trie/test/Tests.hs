@@ -1,6 +1,6 @@
 import Test.Hspec    (describe, hspec, it, shouldBe)
 
-import Trie (Trie(..), left, right, find, decode, toList)
+import Trie (Trie(..), left, right, find, decode, toList, readLines)
 import Bit (Bit(T, F))
 
 main :: IO ()
@@ -35,3 +35,7 @@ main = hspec $ do
       toList trie `shouldBe` [('A',[F,F]),('B',[F,T]),('C',[T])]
     it "Leaf 'A' :-: Leaf 'B'" $ do
       toList (left trie) `shouldBe` [('A',[F]),('B',[T])]
+
+  describe "readLines" $ do
+      it "adkasd" $ do
+        readLines 4 "test.txt"

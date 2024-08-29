@@ -1,4 +1,6 @@
-module Trie  (Trie(..), left, right, find, decode, toList) where
+module Trie  (Trie(..), left, right, find, decode, toList, readLines) where
+
+
 
 import Bit
   
