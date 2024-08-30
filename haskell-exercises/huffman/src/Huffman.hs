@@ -21,19 +21,30 @@ huffmanTrie input = trie $ buildTrie charFrequencies where
   trie (_, b) = b
 
 encode :: String -> Trie Char -> Bits
-encode str trie = concat $ map (encodeChar trie []) str where
-  -- functors???
-  encodeChar (Leaf a) path char = if a == char then Just path else Nothing
-  encodeChar (l :-: r) path char = getJust encodeLeft encodeRight
-  encodeLeft =  encodeChar l (F : path) char
-  encodeRight = encodeChar r (T : path) char
-  getJust Nothing Nothing = error "Invalid trie: no code found for character"
-  getJust (Just _) (Just _) = error "Invalid trie: found more than one code for character"
-  getJust (Just code) _ = code
-  getJust _ (Just code) = code
+encode [] _ = []
+encode str trie = concat $ map (lookupOrError) str where
+  charToBits = buildMap trie []
+  lookupOrError char = justOrError $ M.lookup char charToBits
+  justOrError (Just char) = char
+  justOrError Nothing = error "Character not found in trie"
 
+  -- functors???
+--  encodeChar (Leaf a) path char = if a == char then Just path else Nothing
+--  encodeChar (l :-: r) path char = getJust encodeLeft encodeRight
+--  encodeLeft =  encodeChar l (F : path) char
+--  encodeRight = encodeChar r (T : path) char
+--  getJust Nothing Nothing = error "Invalid trie: no code found for character"
+--  getJust (Just _) (Just _) = error "Invalid trie: found more than one code for character"
+--  getJust (Just code) _ = code
+--  getJust _ (Just code) = code
+
+buildMap :: Trie Char -> Bits -> M.Map Char Bits
+buildMap Empty _ = error "Invalid trie: reached empty node"
+buildMap (Leaf char) consumed = M.fromList [(char, reverse consumed)]
+buildMap (l :-: r) consumed = (buildMap l (F:consumed)) `M.union` (buildMap r (T:consumed))
 
 decode::Bits -> Trie Char -> String
+decode [] _ = ""
 decode code trie = decode' code trie trie where
   decode' _ Empty _ = error "Found unmatched prefix"
   decode' [] (Leaf char) _ = [char]
