@@ -1,3 +1,5 @@
+use crate::Error::{EmptyBuffer, FullBuffer};
+
 #[derive(Debug, PartialEq)]
 pub enum Error {
     EmptyBuffer,
@@ -20,22 +22,41 @@ impl<T:Clone> CircularBuffer<T> {
     }
 
     pub fn read(&mut self) -> Result<T, Error> {
-        todo!()
+        let position: usize = (self.buffer.capacity() + self.next - self.size) % self.buffer.capacity();
+
+        match self.buffer[position].clone() {
+            None => {
+                Err(EmptyBuffer)
+            }
+            Some(element) => {
+                self.buffer[position] = None;
+                self.size -= 1;
+                Ok(element.clone())
+            }
+        }
     }
 
     pub fn write(&mut self, byte: T) -> Result<(), Error> {
-        todo!()
+        if self.is_full() {
+            Err(FullBuffer)
+        } else {
+            self.buffer[self.next] = Some(byte);
+            self.next = (self.next + 1) % self.buffer.capacity();
+            self.size += 1;
+            Ok(())
+        }
     }
 
     pub fn clear(&mut self) {
-        todo!()
+        self.buffer = vec![None; self.buffer.capacity()];
+        self.size = 0;
     }
 
     pub fn is_empty(&self) -> bool {
-        todo!()
+        self.size == 0
     }
 
     pub fn is_full(&self) -> bool {
-        todo!()
+        self.buffer[self.next].is_some()
     }
 }
